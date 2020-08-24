@@ -403,6 +403,8 @@ class Text {
                 const imgDragBarMouseDownEvents = eventHooks.imgDragBarMouseDownEvents
                 imgDragBarMouseDownEvents.forEach(fn => fn())
             }
+            const toolbarClickEvents = eventHooks.toolbarClickEvents
+            toolbarClickEvents.forEach(fn => fn(e))
         })
 
         //table cilik

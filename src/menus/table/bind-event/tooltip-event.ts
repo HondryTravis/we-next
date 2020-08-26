@@ -230,6 +230,19 @@ function hideTableTooltip() {
 }
 
 /**
+ * table外边最右或最左 防止回车后在回车焦点无法换行
+ * @param e
+ */
+function resetKeydownEvent(e: Event) {
+    const $selectElem = _editor.selection.getSelectionContainerElem()
+    if ($($selectElem?.elems[0]).hasClass('w-e-text')) {
+        e.preventDefault()
+        _editor.cmd.do('insertHTML', '<p><br></p>')
+        _editor.selection.createEmptyRange()
+    }
+}
+
+/**
  * 绑定 tooltip 事件
  * @param editor 编辑器实例
  */
@@ -244,6 +257,10 @@ function bindTooltipEvent(editor: Editor) {
     editor.txt.eventHooks.keyupEvents.push(hideTableTooltip)
     editor.txt.eventHooks.toolbarClickEvents.push(hideTableTooltip)
     editor.txt.eventHooks.textScrollEvents.push(hideTableTooltip)
+
+    //防止回车后在回车焦点无法换行和直接敲击键盘无法生成p 以eventHooks 的形式执行
+    editor.txt.eventHooks.keydownEvents.push(resetKeydownEvent)
+    editor.txt.eventHooks.enterUpEvents.push(resetKeydownEvent)
 }
 
 export default bindTooltipEvent

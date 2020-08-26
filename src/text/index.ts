@@ -15,6 +15,7 @@ type TextEventHooks = {
     dropEvents: Function[]
     clickEvents: Function[]
     keyupEvents: Function[]
+    keydownEvents: Function[]
     tabUpEvents: Function[] // tab 键（keyCode === ）Up 时
     tabDownEvents: Function[] // tab 键（keyCode === 9）Down 时
     enterUpEvents: Function[] // enter 键（keyCode === 13）up 时
@@ -41,6 +42,7 @@ class Text {
             dropEvents: [],
             clickEvents: [],
             keyupEvents: [],
+            keydownEvents: [],
             tabUpEvents: [],
             tabDownEvents: [],
             enterUpEvents: [],
@@ -229,6 +231,12 @@ class Text {
             keyupEvents.forEach(fn => fn(e))
         })
 
+        // 键盘 down 时的 hooks
+        $textElem.on('keydown', (e: KeyboardEvent) => {
+            const keydownEvents = eventHooks.keydownEvents
+            keydownEvents.forEach(fn => fn(e))
+        })
+
         // delete 键 up 时 hooks
         $textElem.on('keyup', (e: KeyboardEvent) => {
             if (e.keyCode !== 8) return
@@ -403,8 +411,6 @@ class Text {
                 const imgDragBarMouseDownEvents = eventHooks.imgDragBarMouseDownEvents
                 imgDragBarMouseDownEvents.forEach(fn => fn())
             }
-            const toolbarClickEvents = eventHooks.toolbarClickEvents
-            toolbarClickEvents.forEach(fn => fn(e))
         })
 
         //table cilik
@@ -423,18 +429,6 @@ class Text {
 
             const tableClickEvents = eventHooks.tableClickEvents
             tableClickEvents.forEach(fn => fn($dom))
-        })
-
-        //table外边最右或最左 防止回车后在回车焦点无法换行
-        $textElem.on('keydown', (e: KeyboardEvent) => {
-            if (e.keyCode === 13) {
-                const $selectElem = editor.selection.getSelectionContainerElem()
-                if ($($selectElem?.elems[0]).hasClass('w-e-text')) {
-                    e.preventDefault()
-                    editor.cmd.do('insertHTML', '<p><br></p>')
-                    editor.selection.createEmptyRange()
-                }
-            }
         })
     }
 }

@@ -10,6 +10,8 @@ import './assets/style/text.less'
 import './assets/style/panel.less'
 import './assets/style/droplist.less'
 
+import './utils/polyfill.ts'
+
 import Editor from './editor/index'
 
 // 检验是否浏览器环境

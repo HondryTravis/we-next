@@ -62,7 +62,7 @@
 
     /* Advanced Options */
     "forceConsistentCasingInFileNames": true,  /* Disallow inconsistently-cased references to the same file. */
-    "suppressImplicitAnyIndexErrors": true      /*抑制隐式的任何索引错误,config->index.ts中object.assign函数的polyfill中使用字符串作为索引，添加此抑制后方能不报错*/
+    "suppressImplicitAnyIndexErrors": true      /*抑制隐式的任何索引错误,utils->polyfill中assign function使用字符串作为索引，添加此抑制后方能不报错*/
   },
   "include": [
     "./src/*"

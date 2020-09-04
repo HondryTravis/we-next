@@ -23,21 +23,6 @@ class customFontSize extends DropListMenu implements MenuActive {
         // fontListConf list的数据结构
         const fontList: DropListItem[] = []
 
-        //string.includes function的polyfill, for IE
-        if (!String.prototype.includes) {
-            String.prototype.includes = function (search, start) {
-                'use strict'
-                if (typeof start !== 'number') {
-                    start = 0
-                }
-                if (start + search.length > this.length) {
-                    return false
-                } else {
-                    return this.indexOf(search, start) !== -1
-                }
-            }
-        }
-
         // 遍历自定义数据对象
         for (let item of customFontSizeData) {
             if (!item.value.includes('rem') && !item.value.includes('px')) {

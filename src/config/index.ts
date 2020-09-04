@@ -79,29 +79,6 @@ export type ResourceKey =
 
 export type customFontSizeType = Array<{ value: string; text: string }>
 
-// object.assign function 的 polyfill, for IE
-if (typeof Object.assign !== 'function') {
-    Object.assign = function (...target: object[]): object {
-        'use strict'
-        if (target === null) {
-            throw new TypeError('Cannot convert undefined or null to object')
-        }
-
-        target = Object(target) //把target转为对象
-        for (let index: number = 1; index < arguments.length; index++) {
-            let source: object = arguments[index]
-            if (source !== null) {
-                for (let key in source) {
-                    if (Object.prototype.hasOwnProperty.call(source, key)) {
-                        target[key] = source[key]
-                    }
-                }
-            }
-        }
-        return target
-    }
-}
-
 // 合并所有的配置信息
 const defaultConfig = Object.assign(
     {},

@@ -674,18 +674,6 @@ export class DomElement {
             return null
         }
 
-        //element.matches的polyfill, for IE
-        if (!Element.prototype.matches) {
-            Element.prototype.matches = function (s) {
-                let matches: NodeListOf<Element> = this.ownerDocument.querySelectorAll(s)
-                let i: number = matches.length
-                for (i; i >= 0; i--) {
-                    if (matches.item(i) === this) break
-                }
-                return i > -1
-            }
-        }
-
         if (parent.matches(selector)) {
             // 找到，并返回
             return $(parent)

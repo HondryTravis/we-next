@@ -3,6 +3,79 @@
  * @author wangfupeng
  */
 
+import { type } from 'jquery'
+import { values } from 'lodash'
+
+/**
+ * 判断当前浏览器是什么或者版本号
+ * @param getVersion true时获取版本否则返回浏览器( 'ie' | 'firefox' | 'chrome' | 'opera' | 'safari')
+ * @author liuwei
+ */
+export function getBrowser(
+    getVersion: boolean = false
+): undefined | string | 'ie' | 'firefox' | 'chrome' | 'opera' | 'safari' {
+    // 定义对象接口类型
+    interface ieVeriosn {
+        [values: string]: number
+    }
+    const ua_str: string = navigator.userAgent.toLowerCase()
+
+    let trident: string | undefined
+    let match_str: string | null | RegExpMatchArray
+    let ie_aer_rv: string | 0
+    let browser_chi_Type: string | undefined
+    let ie_Tridents: ieVeriosn = {
+        'trident/7.0': 11,
+        'trident/6.0': 10,
+        'trident/5.0': 9,
+        'trident/4.0': 8,
+    }
+    //判断IE 浏览器,
+    if ('ActiveXObject' in self) {
+        // ie_aer_rv:  指示IE 的版本.
+        // It can be affected by the current document mode of IE.
+        ie_aer_rv = (match_str = ua_str.match(/msie ([\d.]+)/))
+            ? match_str[1]
+            : (match_str = ua_str.match(/rv:([\d.]+)/))
+            ? match_str[1]
+            : 0
+        // ie: Indicate the really version of current IE browser.
+
+        //匹配 ie8, ie11, edge
+        trident = (match_str = ua_str.match(/(trident\/[\d.]+|edge\/[\d.]+)/))
+            ? match_str[1]
+            : undefined
+        if (trident) {
+            browser_chi_Type = (ie_Tridents[trident] || ie_aer_rv) > 0 ? 'ie' : undefined
+        }
+    } else {
+        //判断 windows edge 浏览器
+        // match_str[1]: 返回浏览器及版本号,如: "edge/13.10586"
+        // match_str[1]: 返回版本号,如: "edge"
+        browser_chi_Type = (match_str = ua_str.match(/edge\/([\d.]+)/))
+            ? 'ie'
+            : //判断firefox 浏览器
+            (match_str = ua_str.match(/firefox\/([\d.]+)/))
+            ? 'firefox'
+            : //判断chrome 浏览器
+            (match_str = ua_str.match(/chrome\/([\d.]+)/))
+            ? 'chrome'
+            : //判断opera 浏览器
+            (match_str = ua_str.match(/opera.([\d.]+)/))
+            ? 'opera'
+            : //判断safari 浏览器
+            (match_str = ua_str.match(/version\/([\d.]+).*safari/))
+            ? 'safari'
+            : undefined
+    }
+    //返回浏览器类型和版本号
+    let verStr: string | undefined
+    let verNum: number | string | null
+    verNum = trident && ie_Tridents[trident] ? ie_Tridents[trident] : match_str && match_str[1]
+    verStr = getVersion ? browser_chi_Type + '/' + verNum : browser_chi_Type
+    return verStr
+}
+
 // 和 UA 相关的属性
 export const UA = {
     _ua: navigator.userAgent,

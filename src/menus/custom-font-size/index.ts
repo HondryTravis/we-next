@@ -66,7 +66,7 @@ class customFontSize extends DropListMenu implements MenuActive {
         // 说明当前选中的文字的选区之前设置过字体大小
         if (parentNodename === 'SPAN' && curFontzie != '') {
             if (!selection.isSelectionEmpty()) {
-                // 获取父级的node直接设置font-size
+                // 获取父级的element直接设置font-size
                 selection
                     .getRange()
                     ?.commonAncestorContainer.parentElement?.setAttribute(

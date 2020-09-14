@@ -56,31 +56,38 @@ class customFontSize extends DropListMenu implements MenuActive {
         const editor = this.editor
         const selection = editor.selection
 
+        // 获取父级的element
+        const parentEle = selection.getRange()?.commonAncestorContainer.parentElement
         // 获取当前选择文字父级的标签的名字
-        const parentNodename: string | undefined = selection.getRange()?.commonAncestorContainer
-            .parentElement?.nodeName
+        const parentNodename: string | undefined = parentEle?.nodeName
         // 获取当前fontsize大小
-        const curFontzie: String | undefined = selection.getRange()?.commonAncestorContainer
-            .parentElement?.style?.fontSize
+        const curFontzie: String | undefined = parentEle?.style?.fontSize
+        // 获取选区被选中的文字
+        const text = selection.getSelectionText()
+        // 需要插入的html
+        let html = `<span style="font-size:${value}">${text}</span>`
         // 当他的父级的Nodename是span且有font-size大小时
         // 说明当前选中的文字的选区之前设置过字体大小
         if (parentNodename === 'SPAN' && curFontzie != '') {
-            if (!selection.isSelectionEmpty()) {
+            // 创建动态RegExp正则
+            const regStr: string = `>${text}</span>`
+            const reg: RegExp = new RegExp(regStr, 'g')
+            // 获取当前编辑区html
+            const editorhtml: string = editor.txt.html() as string
+            // 如果匹配成功说明span标签包着的就是这个文字，直接给它的父级设置字体大小属性即可
+            const regRes: boolean = reg.test(editorhtml)
+            if (!selection.isSelectionEmpty() && text !== '' && text.length > 0 && regRes) {
                 // 获取父级的element直接设置font-size
-                selection
-                    .getRange()
-                    ?.commonAncestorContainer.parentElement?.setAttribute(
-                        'style',
-                        `font-size:${value}`
-                    )
+                parentEle?.setAttribute('style', `font-size:${value}`)
+            } else {
+                // 否则选的可能是之前设置过大小的文字中某几个字直接执行insertElem方法
+                if (!selection.isSelectionEmpty() && text !== '' && text.length > 0) {
+                    editor.cmd.do(`insertElem`, $(html))
+                }
             }
         } else {
-            // 获取选区被选中的文字
-            const text = selection.getSelectionText()
-            // 需要插入的html
-            let html = `<span style="font-size:${value}">${text}</span>`
             // Todo 待优化 insertHTML 导致dom重绘选区丢失问题 insertElem无法撤回
-            if (!selection.isSelectionEmpty()) {
+            if (!selection.isSelectionEmpty() && text !== '' && text.length > 0) {
                 editor.cmd.do(`insertElem`, $(html))
             }
         }
